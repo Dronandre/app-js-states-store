@@ -13,7 +13,7 @@ export function render () {
                     <div class="filter__col">
                         <div class="filter__label">Выбор проекта:</div>
                         <select name="complex" id="" class="filter__dropdown">
-                            <option>Все проекты</option>
+                            <option value="">Все проекты</option>
                             <option value="Генеральский"
                                 >ЖК Генеральский</option
                             >
@@ -37,8 +37,7 @@ export function render () {
                                 type="checkbox"
                                 id="rooms_2"
                                 class="rooms__checkbox"
-                                value="2"
-                                checked
+                                value="2"                                
                             /><label for="rooms_2" class="rooms__btn">2</label>
                             <input
                                 name="rooms"
@@ -119,8 +118,8 @@ export function render () {
                     </div>
                 </div>
                 <div class="filter__buttons">
-                    <button class="filter__show">Показать 119 объектов</button>
-                    <button class="filter__reset">Сбросить фильтр</button>
+                    <button type="submit" class="filter__show">Показать 119 объектов</button>
+                    <button type="reset" class="filter__reset">Сбросить фильтр</button>
                 </div>
             </form>
     `;
@@ -130,10 +129,45 @@ export function render () {
 
 
 export function getInput(){
-    console.log('GetInput');
-
+    
     const search_params = new URLSearchParams();
 
-    
+    if (elements.filterSelect[0].value !== '') {
+        search_params.append(elements.filterSelect[0].name, elements.filterSelect[0].value);
+    }
 
+    const roomsValuesArr = [];   
+    Array.from(elements.filterRooms).forEach((checkbox)=> {
+        if (checkbox.value !== '' && checkbox.checked) {
+            roomsValuesArr.push(checkbox.value)
+        }
+    });
+    const roomsValuesString = roomsValuesArr.join(',');
+    if (roomsValuesString !== '') {
+        search_params.append('rooms', roomsValuesString);
+    }
+
+    Array.from(elements.filterFields).forEach((input) => {
+        if (input.value != '') {
+            search_params.append(input.name, input.value)
+        }
+    });
+
+    const query_string = search_params.toString();
+
+    if (query_string) {
+        return '?' + query_string;
+    } else {
+        return ''
+    }
+
+}
+
+export function changeBtnText(number){
+    if (number > 0) {
+        elements.filterButton[0].innerText = `Показать ${number} объектов`;
+    } else {
+        elements.filterButton[0].innerText = `Объекты не найдены`;
+    }
+    
 }
